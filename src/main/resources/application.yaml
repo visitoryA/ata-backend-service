@@ -1,0 +1,14 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /backend
+
+spring:
+  application:
+    name: ata-backend-service
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+api-config:
+  default-page: 1
+  default-limit: 10
