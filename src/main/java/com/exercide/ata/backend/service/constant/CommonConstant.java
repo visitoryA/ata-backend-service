@@ -18,6 +18,7 @@ public final class CommonConstant {
 
     public static final class REGEX {
         public static final String SORT_TYPE = "^(" + ASC + "|" + DESC +")$";
-        public static final String NUM_FORMAT = "(^((\\d*)(\\d{1,3}(?:,\\d{3})*))(?:\\.\\d+)?$)";
+        public static final String CHAR_FORMAT = "^([^0-9]*)$";
+        public static final String NUM_FORMAT = "(^((\\d{1,3}(?:,\\d{3})*))(?:\\.\\d+)?$)|^(\\d*)(?:\\.\\d+)?$";
     }
 }

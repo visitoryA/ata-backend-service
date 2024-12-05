@@ -14,6 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ValidatorUtilTest {
     @Test
     void validateCurrency() {
+        assertTrue(ValidatorUtil.validateCurrency(null));
         assertTrue(ValidatorUtil.validateCurrency("$122.0"));
         assertTrue(ValidatorUtil.validateCurrency(" 121,234.00"));
         assertTrue(ValidatorUtil.validateCurrency("123,456,789"));
@@ -22,6 +23,9 @@ class ValidatorUtilTest {
         assertTrue(ValidatorUtil.validateCurrency("$456k"));
         assertTrue(ValidatorUtil.validateCurrency("456M"));
 
+        assertFalse(ValidatorUtil.validateCurrency(""));
+        assertFalse(ValidatorUtil.validateCurrency(" "));
+        assertFalse(ValidatorUtil.validateCurrency("1212,000"));
         assertFalse(ValidatorUtil.validateCurrency("$112.0.0"));
         assertFalse(ValidatorUtil.validateCurrency("12,1$34.00"));
         assertFalse(ValidatorUtil.validateCurrency("$456K"));

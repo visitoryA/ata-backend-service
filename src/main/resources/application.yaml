@@ -9,6 +9,9 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+data-set:
+  csv-path: src/main/resources/dataset/salary_survey-3.csv
+
 api-config:
   default-page: 1
   default-limit: 10

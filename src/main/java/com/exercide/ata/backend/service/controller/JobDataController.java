@@ -12,6 +12,7 @@ import com.exercide.ata.backend.service.service.JobDataService;
 import com.exercide.ata.backend.service.util.CommonUtil;
 import com.exercide.ata.backend.service.util.ValidatorUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -84,7 +85,28 @@ public class JobDataController {
     private void validateRequest(JobDataRequest request) throws BusinessException {
         StringBuilder invalidFields = new StringBuilder();
 
+        int minSalaryReq = 0;
+        int maxSalaryReq = 0;
         // validate minSalary, maxSalary
+        if (Strings.isNotBlank(request.getMinSalary())) {
+            if (ValidatorUtil.validateCurrency(request.getMinSalary())) {
+                minSalaryReq = CommonUtil.convertCurrency(request.getMinSalary());
+            } else {
+                CommonUtil.appendStrBuilder(invalidFields, JobDataRequestFields.MIN_SAL);
+            }
+        }
+
+        if (Strings.isNotBlank(request.getMaxSalary())) {
+            if (ValidatorUtil.validateCurrency(request.getMaxSalary())) {
+                maxSalaryReq = CommonUtil.convertCurrency(request.getMaxSalary());
+                if (maxSalaryReq < minSalaryReq) {
+                    CommonUtil.appendStrBuilder(invalidFields, JobDataRequestFields.MIN_SAL);
+                    CommonUtil.appendStrBuilder(invalidFields, JobDataRequestFields.MAX_SAL);
+                }
+            } else {
+                CommonUtil.appendStrBuilder(invalidFields, JobDataRequestFields.MAX_SAL);
+            }
+        }
 
         GenderEnum.validate(request, invalidFields);
 
@@ -107,7 +129,12 @@ public class JobDataController {
 
         if (request.getPage() != null) {
             if (ValidatorUtil.validateWithRegex(CommonConstant.REGEX.NUM_FORMAT, request.getPage())) {
-                request.setPageInt(CommonUtil.convertStrToInt(request.getPage()));
+                int pageInt = CommonUtil.convertStrToInt(request.getPage(), null);
+                if (pageInt > 0) {
+                    request.setPageInt(pageInt);
+                } else {
+                    CommonUtil.appendStrBuilder(invalidFields, DeclaredFields.PAGE);
+                }
             } else {
                 CommonUtil.appendStrBuilder(invalidFields, DeclaredFields.PAGE);
             }
@@ -117,7 +144,12 @@ public class JobDataController {
 
         if (request.getLimit() != null) {
             if (ValidatorUtil.validateWithRegex(CommonConstant.REGEX.NUM_FORMAT, request.getLimit())) {
-                request.setLimitInt(CommonUtil.convertStrToInt(request.getLimit()));
+                int limitInt = CommonUtil.convertStrToInt(request.getLimit(), null);
+                if (limitInt > 0) {
+                    request.setPageInt(limitInt);
+                } else {
+                    CommonUtil.appendStrBuilder(invalidFields, DeclaredFields.LIMIT);
+                }
             } else {
                 CommonUtil.appendStrBuilder(invalidFields, DeclaredFields.LIMIT);
             }

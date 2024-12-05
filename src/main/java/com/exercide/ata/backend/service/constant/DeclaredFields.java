@@ -31,19 +31,18 @@ public final class DeclaredFields {
         public static final String ADD_CMT = "additional_comment";
     }
 
-    public static final class SalarySurveyFields {
-        public static final String TIMESTAMP = "Timestamp";
-        public static final String EMPLOYER = "Employer";
-        public static final String LOCATION = "Location";
-        public static final String JOB_TITLE = "Job Title";
-        public static final String YEAR_EMP = "Years at Employer";
-        public static final String YEAR_EXP = "Years of Experience";
-        public static final String SALARY = "Salary";
-        public static final String SIGN_BONUS = "Signing Bonus";
-        public static final String ANNUAL_BONUS = "Annual Bonus";
-        public static final String ANNUAL_STOCK = "Annual Stock Value/Bonus";
-        public static final String GENDER = "Gender";
-        public static final String ADD_CMT = "Additional Comments";
+    public static final class SalarySurveyCsvIndex {
+        public static final int TIMESTAMP = 0;
+        public static final int EMPLOYER = 1;
+        public static final int LOCATION = 2;
+        public static final int JOB_TITLE = 3;
+        public static final int YEAR_EMP = 4;
+        public static final int YEAR_EXP = 5;
+        public static final int SALARY = 6;
+        public static final int SIGN_BONUS = 7;
+        public static final int ANNUAL_BONUS = 8;
+        public static final int ANNUAL_STOCK = 9;
+        public static final int GENDER = 10;
+        public static final int ADD_CMT = 11;
     }
-
 }

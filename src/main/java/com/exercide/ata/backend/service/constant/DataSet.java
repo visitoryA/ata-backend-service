@@ -1,23 +1,25 @@
 package com.exercide.ata.backend.service.constant;
 
-import com.exercide.ata.backend.service.deserializer.SalarySurveyDeserializer;
+import com.exercide.ata.backend.service.constant.DeclaredFields.SalarySurveyCsvIndex;
 import com.exercide.ata.backend.service.model.jobdata.SalarySurvey;
-import com.fasterxml.jackson.databind.MappingIterator;
-import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import com.exercide.ata.backend.service.util.ValidatorUtil;
+import com.opencsv.CSVReader;
 import jakarta.annotation.PostConstruct;
 import lombok.Getter;
+import org.apache.logging.log4j.util.Strings;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Component
 public class DataSet {
+
+    @Value("${data-set.csv-path}")
+    private String csvFilePath;
     @Getter
     private static final List<SalarySurvey> dataSet = new ArrayList<>();
 
@@ -25,20 +27,30 @@ public class DataSet {
     public void init() {
         if (dataSet.isEmpty()) {
             try {
-                CsvMapper mapper = new CsvMapper();
+                FileReader fileReader = new FileReader(csvFilePath);
+                CSVReader csvReader = new CSVReader(fileReader);
 
-                // Register your custom deserializer
-                mapper.registerModule(new SimpleModule().addDeserializer(SalarySurvey.class, new SalarySurveyDeserializer()));
-
-                CsvSchema schema = CsvSchema.emptySchema().withHeader();  // Assuming CSV has headers
-
-                MappingIterator<SalarySurvey> iterator = mapper.readerFor(SalarySurvey.class)
-                        .with(schema)
-                        .readValues(new File("src/main/resources/dataset/salary_survey-3.csv"));
-                iterator.forEachRemaining(dataSet::add);
-
-                // Filter out null objects (those that were skipped due to empty fields)
-                dataSet.removeIf(Objects::isNull);
+                csvReader.skip(1); // skip header
+                csvReader.iterator().forEachRemaining(line -> {
+                    if (Strings.isNotBlank(line[SalarySurveyCsvIndex.JOB_TITLE]) &&
+                            ValidatorUtil.validateCurrency(line[SalarySurveyCsvIndex.SALARY])) {
+                        SalarySurvey survey = SalarySurvey.builder()
+                                .timestamp(line[SalarySurveyCsvIndex.TIMESTAMP])
+                                .employerName(line[SalarySurveyCsvIndex.EMPLOYER])
+                                .location(line[SalarySurveyCsvIndex.LOCATION])
+                                .jobTitle(line[SalarySurveyCsvIndex.JOB_TITLE])
+                                .yearAtEmployer(line[SalarySurveyCsvIndex.YEAR_EMP])
+                                .yearOfExperience(line[SalarySurveyCsvIndex.YEAR_EXP])
+                                .salary(line[SalarySurveyCsvIndex.SALARY])
+                                .signingBonus(line[SalarySurveyCsvIndex.SIGN_BONUS])
+                                .annualBonus(line[SalarySurveyCsvIndex.ANNUAL_BONUS])
+                                .annualStock(line[SalarySurveyCsvIndex.ANNUAL_STOCK])
+                                .gender(line[SalarySurveyCsvIndex.GENDER])
+                                .additionalCmt(line[SalarySurveyCsvIndex.ADD_CMT])
+                                .build();
+                        dataSet.add(survey);
+                    }
+                });
             } catch (IOException ex) {
                 System.out.println("Cannot get static data from CSV file");
             }

@@ -12,10 +12,11 @@ class CommonUtilTest {
         assertEquals(11, CommonUtil.convertCurrency("11.03"));
         assertEquals(2005, CommonUtil.convertCurrency("2,005.5"));
         assertEquals(35456, CommonUtil.convertCurrency("35456"));
+        assertEquals(11000, CommonUtil.convertCurrency("11k"));
         assertEquals(11, CommonUtil.convertCurrency("$11.03"));
         assertEquals(2005, CommonUtil.convertCurrency("$2,005.5"));
         assertEquals(354000, CommonUtil.convertCurrency("$354k"));
-        assertEquals(3000000, CommonUtil.convertCurrency("$3M"));
+        assertEquals(3500000, CommonUtil.convertCurrency("$3.5M"));
 
         assertNull(CommonUtil.convertCurrency(null));
         assertNull(CommonUtil.convertCurrency(""));
@@ -24,13 +25,13 @@ class CommonUtilTest {
 
     @Test
     void convertStrToIntWorksProperly() {
-        assertEquals(11, CommonUtil.convertStrToInt("11.03"));
-        assertEquals(2005, CommonUtil.convertStrToInt("2,005.5"));
-        assertEquals(35456, CommonUtil.convertStrToInt("35456"));
+        assertEquals(22, CommonUtil.convertStrToInt("11.03", 2));
+        assertEquals(2005, CommonUtil.convertStrToInt("2,005.5", 1));
+        assertEquals(35456, CommonUtil.convertStrToInt("35456", null));
 
-        assertNull(CommonUtil.convertStrToInt(null));
-        assertNull(CommonUtil.convertStrToInt(""));
-        assertNull(CommonUtil.convertStrToInt(" "));
+        assertNull(CommonUtil.convertStrToInt(null, 0));
+        assertNull(CommonUtil.convertStrToInt("", 1));
+        assertNull(CommonUtil.convertStrToInt(" ", 2));
     }
 
     @Test
@@ -41,6 +42,10 @@ class CommonUtilTest {
         assertEquals("test", actualResult);
 
         CommonUtil.appendStrBuilder(stringBuilder, "test_1");
+        actualResult = stringBuilder.toString();
+        assertEquals("test, test_1", actualResult);
+
+        CommonUtil.appendStrBuilder(stringBuilder, "test");
         actualResult = stringBuilder.toString();
         assertEquals("test, test_1", actualResult);
     }
