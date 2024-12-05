@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @Builder
 public class JobDataResponse {
-    private String status;
+    private String statusCode;
     private String message;
     private JobDataList data;
 }

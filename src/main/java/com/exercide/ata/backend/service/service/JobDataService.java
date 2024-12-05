@@ -45,7 +45,7 @@ public class JobDataService {
                 .jobData(jobData)
                 .build();
         return JobDataResponse.builder()
-                .status(ResponseMessageEnum.SUCCESS.getCode())
+                .statusCode(ResponseMessageEnum.SUCCESS.getCode())
                 .message(ResponseMessageEnum.SUCCESS.getMessage())
                 .data(dataList)
                 .build();
