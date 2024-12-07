@@ -88,7 +88,7 @@ public class JobDataController {
         int minSalaryReq = 0;
         int maxSalaryReq = 0;
         // validate minSalary, maxSalary
-        if (Strings.isNotBlank(request.getMinSalary())) {
+        if (request.getMinSalary() != null) {
             if (ValidatorUtil.validateCurrency(request.getMinSalary())) {
                 minSalaryReq = CommonUtil.convertCurrency(request.getMinSalary());
             } else {
@@ -96,7 +96,7 @@ public class JobDataController {
             }
         }
 
-        if (Strings.isNotBlank(request.getMaxSalary())) {
+        if (request.getMaxSalary() != null) {
             if (ValidatorUtil.validateCurrency(request.getMaxSalary())) {
                 maxSalaryReq = CommonUtil.convertCurrency(request.getMaxSalary());
                 if (maxSalaryReq < minSalaryReq) {
